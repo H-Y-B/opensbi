@@ -141,7 +141,7 @@ int sbi_ecall_handler(struct sbi_trap_regs *regs)
 	return 0;
 }
 
-int sbi_ecall_init(void)
+int sbi_ecall_init(void)//注册sbi-ecall接口函数
 {
 	int ret;
 

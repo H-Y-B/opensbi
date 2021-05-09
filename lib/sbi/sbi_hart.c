@@ -473,9 +473,11 @@ void __attribute__((noreturn)) sbi_hart_hang(void)
 }
 
 void __attribute__((noreturn))
-sbi_hart_switch_mode(unsigned long arg0, unsigned long arg1,
-		     unsigned long next_addr, unsigned long next_mode,
-		     bool next_virt)
+sbi_hart_switch_mode(unsigned long arg0, 
+					 unsigned long arg1,
+		     		 unsigned long next_addr, 
+					 unsigned long next_mode,
+		     		 bool next_virt)
 {
 #if __riscv_xlen == 32
 	unsigned long val, valH;

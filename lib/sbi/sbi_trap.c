@@ -210,7 +210,7 @@ int sbi_trap_redirect(struct sbi_trap_regs *regs,
  *
  * @param regs pointer to register state
  */
-void sbi_trap_handler(struct sbi_trap_regs *regs)
+void sbi_trap_handler(struct sbi_trap_regs *regs)//中断异常入口
 {
 	int rc = SBI_ENOTSUPP;
 	const char *msg = "trap handler failed";

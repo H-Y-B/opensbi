@@ -47,10 +47,10 @@
 	.globl _start_warm
 _start:
 	/* Find preferred boot HART id */
-	MOV_3R	s0, a0, s1, a1, s2, a2
+	MOV_3R	s0, a0, s1, a1, s2, a2  /*保存a0 a1 a2*/
 	call	fw_boot_hart
 	add	a6, a0, zero
-	MOV_3R	a0, s0, a1, s1, a2, s2
+	MOV_3R	a0, s0, a1, s1, a2, s2  /*恢复a0 a1 a2*/
 	li	a7, -1
 	beq	a6, a7, _try_lottery
 	/* Jump to relocation wait loop if we are not boot hart */
@@ -135,7 +135,7 @@ _wait_relocate_copy_done:
 	nop
 	nop
 	nop
-	bgt     t4, t5, 1b
+	bgt     t4, t5, 1b  /*t4重定向结束状态（=1）   t5当前启动状态*/
 	jr	t3
 _relocate_done:
 
@@ -221,7 +221,7 @@ _bss_zero:
 	li	t2, 1
 	/* hartid 0 is mandated by ISA */
 	li	t1, 0
-_scratch_init:
+_scratch_init:         //初始化结构体 struct sbi_scratch
 	add	tp, t3, zero
 	mul	a5, s8, t1
 	sub	tp, tp, a5
@@ -341,13 +341,18 @@ _fdt_reloc_again:
 	blt	t1, t2, _fdt_reloc_again
 _fdt_reloc_done:
 
+
+
+
 	/* mark boot hart done */
 	li	t0, BOOT_STATUS_BOOT_HART_DONE
 	la	t1, _boot_status
-	REG_S	t0, 0(t1)
+	REG_S	t0, 0(t1)  /*将  当前启动状态  设置为 “启动完成”*/
 	fence	rw, rw
 	j	_start_warm
 
+
+	/*循环等待*/
 	/* waiting for boot hart to be done (_boot_status == 2) */
 _wait_for_boot_hart:
 	li	t0, BOOT_STATUS_BOOT_HART_DONE
@@ -357,7 +362,15 @@ _wait_for_boot_hart:
 	nop
 	nop
 	nop
-	bne	t0, t1, _wait_for_boot_hart
+	bne	t0, t1, _wait_for_boot_hart  /*t0：启动完成状态标志（=2）   t1：当前启动状态*/
+
+
+
+
+
+
+
+
 
 _start_warm:
 	/* Reset all registers for non-boot HARTs */
@@ -440,7 +453,26 @@ _skip_trap_exit_rv32_hyp:
 
 	/* Initialize SBI runtime */
 	csrr	a0, CSR_MSCRATCH
-	call	sbi_init
+	call	sbi_init               
+//-----------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	/* We don't expect to reach here hence just hang */
 	j	_start_hang

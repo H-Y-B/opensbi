@@ -312,8 +312,16 @@ static void __noreturn init_coldboot(struct sbi_scratch *scratch, u32 hartid)
 	(*init_count)++;
 
 	sbi_hsm_prepare_next_jump(scratch, hartid);
-	sbi_hart_switch_mode(hartid, scratch->next_arg1, scratch->next_addr,
-			     scratch->next_mode, FALSE);
+	sbi_hart_switch_mode(hartid, 
+						 scratch->next_arg1, 
+						 scratch->next_addr,
+			     		 scratch->next_mode, 
+						 FALSE);
+					 /*unsigned long arg0, 
+					   unsigned long arg1,
+		     		   unsigned long next_addr, 
+					   unsigned long next_mode,
+		     		   bool next_virt*/
 }
 
 static void init_warm_startup(struct sbi_scratch *scratch, u32 hartid)
